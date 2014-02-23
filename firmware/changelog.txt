@@ -1,0 +1,11 @@
+USB2AX firmware (lufa_usb2ax)
+
+v04 - 2014/01/18
+  * Corrects incompatibility with RoboPlus 1.1.x and Dynamixel v2.0 protocol.
+  * added a "reset to bootloader" function triggered by opening the port at 1200bps and closing it. The old way (with a "bootload" dynamixel packet) is still available.
+  * Updated to LUFA 20130901.
+
+
+v03 - 2012/09/14
+  * initial release. Firmware used for the first 200 units manufactured.
+

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "USB2AX", "lufa_usb2ax\USB2AX.cproj", "{C5931767-704A-4836-8303-4AC753F806E1}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "USB2AX_Serial", "lufa_usb2ax_serial\USB2AX_Serial.cproj", "{35D732C6-1ECA-4FA6-95D4-D03F82292640}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5931767-704A-4836-8303-4AC753F806E1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{C5931767-704A-4836-8303-4AC753F806E1}.Debug|AVR.Build.0 = Debug|AVR
+		{C5931767-704A-4836-8303-4AC753F806E1}.Release|AVR.ActiveCfg = Release|AVR
+		{C5931767-704A-4836-8303-4AC753F806E1}.Release|AVR.Build.0 = Release|AVR
+		{35D732C6-1ECA-4FA6-95D4-D03F82292640}.Debug|AVR.ActiveCfg = Debug|AVR
+		{35D732C6-1ECA-4FA6-95D4-D03F82292640}.Debug|AVR.Build.0 = Debug|AVR
+		{35D732C6-1ECA-4FA6-95D4-D03F82292640}.Release|AVR.ActiveCfg = Release|AVR
+		{35D732C6-1ECA-4FA6-95D4-D03F82292640}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,127 @@
+C Nicolas Saugnier, 2014.
+Based on documentation by Richard "iBot" Ibbotson
+
+
+
+The USB2AX can react to some specific commands as if it were a Dynamixel device.
+
+The USB2AX responds to the following instructions:
+
+Value + Instruction +              Description                    + Number of parameters
+0x02  | READ_DATA   |  Read data from USB2AX                      |    2
+0x06  | RESET       |  Reboot USB2AX                              |    0
+0x08  | BOOTLOADER  |  Reboot USB2AX in bootloader mode           |    0
+0x84  | SYNC_READ   |  Read from several Dynamixel simultaneously | 4 or more
+
+Please note that it will silently ignore the other Dynamixel commands (PING, WRITE_DATA, REG_WRITE, ACTION), and in fact will transmit them on the Dynamixel bus.
+
+WARNING : the USB2AX uses the ID <0xFD>, therefor you can not use it for any another Dynamixel device on the bus.
+
+The packet structure is the same as the one of the regular Dynamixel packets ( see http://support.robotis.com/en/product/dynamixel/communication/dxl_packet.htm ).
+
+
+******************************
+ READ_DATA
+******************************
+
+Read data from the USB2AX Control Table.
+
+Address +       Name       +             Description         + Access + Initial value
+0(0x00) | Model Number (L) | Lowest byte of Model Number     | R      |    0x01
+1(0x01) | Model Number (H) | Higher byte of Model number     | R      |    0x42
+2(0x02) | Firmware Version | Version of the firmware in use  | R      |     -	
+3(0x03) | ID               | ID of USB2AX                    | R      |    0xFD
+
+Instruction Packet: 
+Identical to the command you would use to read data from a Dynamixel device with an ID of 0xFD.
+
+
+******************************
+ RESET
+******************************
+
+Reboot the controller.
+
+Instruction Packet: 
+Identical to the command you would use to reset a Dynamixel with an ID of 0xFD to factory settings.
+
+
+******************************
+ BOOTLOADER
+******************************
+
+Reboot the controller in bootloader mode, for firmware update.
+
+Instruction Packet: 
+Similar to the commandd you would use to reset a Dynamixel with an ID of 0xFD to factory settings, except with an instruction of 0x08.
+
+NOTE: as of v04, a simplified alternative way is provided to run the bootloader: open the port at 1200bps and close it. The USB2AX should re-enumerate as a DFU device 2s later.
+
+
+******************************
+ SYNC_READ
+******************************
+
+SYNC_READ is a command used for reading data from multiple Dynamixel actuators with one command.
+
+***Warning*** : 
+Various implementations of custom Dynamixel multiple-read commands named SYNC_READ can be found over the internet, this one is based on the one found in the arbotix_python ROS package by Michael Ferguson.
+It is not part of the original Dynamixel protocol, and is only supported by some advanced third party Dynamixel controllers, like the USB2AX. Please only refer to your controller manufacturer for support, do not contact Robotis!
+
+
+
+<TODO>
+
+SYNC_READ is a command only the controller can understand.
+Using this command without such a controller to interpret it will either not have any effect or, if you have a servo with an ID of 0xFD connected on the Dynamixel bus, it might be responded to with a 0x20 error.
+
+
+In the controller, SYNC_READ is converted into multiple separate READ commands.
+
+This allows for a significant performance boost when reading the same values in multiple actuators.
+
+The communication time is decreased by the SYNC_READ instruction since many Dynamixel bus read instructions can be performed in a single controller command and response. This makes a significant performance increase where the controller connection may experience high latency compared to the dynamixel bus speed.
+
+You can use this instruction only when the lengths and addresses of the control table to be read from are the same.
+
+
+Note : the USB2AX limits the maximum number of actuators to read from (N) to 32, and the maximum data length (L) to 6 bytes.
+
+
+
+Instruction Packet: 
+
+<0xFF><0xFF><ID><Length><Instruction><Param 1><Param 2><Param 3> ... <Param N+2><Checksum>
+
+	ID 		: 0XFD or 0xFE 
+	Length 		: N + 4 (N: number of Dynamixel actuators to read from, value between 1 and 32 inclusive) 
+	Instruction 	: 0X84
+	Param 1 	: Starting address of the location where the data is to be read from 
+	Param 2 	: L (L: length of the data to be read, value between 1 and 6 inclusive)
+	Param 3 	: The ID of the 1st Dynamixel actuator 
+	... 
+	Parameter N+2 	: The ID of the Nth  Dynamixel actuator 
+	Checksum	: The usual checksum of Dynamixel packets 
+
+
+Status Packet (Return Packet): 
+
+<0xFF><0xFF><ID><Length><Error><Param 1> ... <Param L><Param L+1> ... <Param L*N><Checksum>
+
+	ID 		: 0xFD
+	Length 		: ( L * N ) + 2 (L: length of the data to be read, N: number of Dynamixel actuators to read from) 
+	Error 		: 0x00   ( Only Range Error supported, set if value of L or N was invalid)  
+	Param 1		: 1st Value read from starting address of 1st Dynamixel actuator 
+	...
+	Param L		: Lth Value read from starting address of 1st Dynamixel actuator 
+	Param L+1 	: 1st Value read from starting address of 2nd Dynamixel actuator 
+	...
+	Param L*N 	: Lth Value read from starting address of Nth Dynamixel actuator 
+	Checksum 	: The usual checksum of Dynamixel packets
+
+
+Example
+Reading the Present Position and Present Speed for 4 Dynamixel actuators with IDs of 0, 1, 2, 7 
+
+Instruction Packet 	: 0XFF 0XFF 0XFD 0X08 0X84 0X24 0X04 0X00 0X01 0X02 0X07 0X44 
+Response Packet 	: 0XFF 0XFF 0XFD 0X12 0X00 0X50 0X01 0XFF 0X01 0X20 0X00 0X00 0X02 0X10 0X00 0X10 0X02 0X00 0X00 0XFE 0X01 0X5C 
