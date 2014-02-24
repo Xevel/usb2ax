@@ -1,0 +1,34 @@
+LIBRARY	"dynamixel"
+
+EXPORTS
+    dxl_initialize
+    dxl_terminate
+    dxl_get_result
+    dxl_tx_packet
+    dxl_rx_packet
+    dxl_txrx_packet
+    dxl_set_txpacket_id
+    dxl_set_txpacket_instruction
+    dxl_set_txpacket_parameter
+    dxl_set_txpacket_length
+    dxl_get_rxpacket_error
+    dxl_get_rxpacket_length
+    dxl_get_rxpacket_parameter
+    dxl_makeword
+    dxl_get_lowbyte
+    dxl_get_highbyte
+    dxl_ping
+    dxl_read_byte
+    dxl_write_byte
+    dxl_read_word
+    dxl_write_word
+	dxl_sync_write_start
+	dxl_sync_write_push_id
+	dxl_sync_write_push_byte
+	dxl_sync_write_push_word
+	dxl_sync_write_send
+	dxl_sync_read_start
+	dxl_sync_read_push_id
+	dxl_sync_read_send
+	dxl_sync_read_pop_byte
+	dxl_sync_read_pop_word
