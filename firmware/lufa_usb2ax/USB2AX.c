@@ -359,12 +359,14 @@ void pass_bytes(uint8_t nb_bytes){
 void setRX(void) {
 	loop_until_bit_is_set( UCSR1A, TXC1 ); // wait until last byte has been sent (it will set USART Transmit Complete flag)
 	
+    bitClear(PORTB, 1);
     // enable RX and RX interrupt, disable TX and all TX interrupt
     UCSR1B = ((1 << RXCIE1) | (1 << RXEN1));
 }
 
 void setTX(void) {
     // enable TX, disable RX and all RX interrupt
+    bitSet(PORTB, 1);
     UCSR1B = (1 << TXEN1);
 }
 
@@ -445,6 +447,9 @@ void setup_hardware(void){
     /* Hardware Initialization */
     LEDs_Init();
     USB_Init();
+
+    // RS485 driver
+    bitSet(DDRB, 1);
 
     // Start the global timer 
     TCCR0A = (1 << WGM01); // CTC mode
