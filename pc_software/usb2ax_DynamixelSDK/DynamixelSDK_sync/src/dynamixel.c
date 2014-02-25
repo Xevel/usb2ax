@@ -88,7 +88,7 @@ void dxl_tx_packet()
 	if( gbInstructionPacket[INSTRUCTION] == INST_READ )
 		dxl_hal_set_timeout( gbInstructionPacket[PARAMETER+1] + 6 );
 	else if ( gbInstructionPacket[INSTRUCTION] == INST_SYNC_READ )
-        dxl_hal_set_timeout( gbInstructionPacket[PARAMETER+1] + 6 ); // TODO compute reasonable timeout for SYNC_READ even in the case where some servos do not answer!!!
+        dxl_hal_set_timeout( gbInstructionPacket[PARAMETER+1] + 6 );
     else
 		dxl_hal_set_timeout( 6 );
 
