@@ -42,7 +42,7 @@ uint32_t Boot_Key ATTR_NO_INIT;     // variable untouched upon reset. Used to te
 #define MAGIC_BOOT_KEY              0xBADBEEF // arbitrary value, only used for comparition
   
 // From "Entering the Bootloader via Software" in LUFA Library documentation
-// http://www.fourwalledcubicle.com/files/LUFA/Doc/120219/html/_page__software_bootloader_start.html  
+// http://www.fourwalledcubicle.com/files/LUFA/Doc/140302/html/_page__software_bootloader_start.html
 void Bootloader_Jump_Check(void){
     // If the reset source was the bootloader and the key is correct, clear it and jump to the bootloader
     if ((MCUSR & (1<<WDRF)) && (Boot_Key == MAGIC_BOOT_KEY)){
