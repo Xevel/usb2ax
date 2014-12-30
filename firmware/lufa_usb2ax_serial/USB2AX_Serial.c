@@ -178,6 +178,10 @@ void SetupHardware(void)
 	LEDs_Init();
 	USB_Init();
 
+    // enable pull-up on the RX pin to prevent spurious signal.
+    bitClear(DDRD,2);
+    bitSet( PORTD,2);
+
 	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
 	TCCR0B = (1 << CS02);
 }
