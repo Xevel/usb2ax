@@ -8,24 +8,24 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="yes" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="yes" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="yes" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="yes" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -34,8 +34,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -43,16 +43,16 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
-<layer number="51" name="tDocu" color="13" fill="1" visible="yes" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="13" fill="1" visible="no" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -512,15 +512,17 @@ Beware of mounting tabs size, differet plugs have different needs.</description>
 <wire x1="2.3368" y1="-0.254" x2="2.5654" y2="-0.254" width="0.4064" layer="21"/>
 <wire x1="0.254" y1="2.3368" x2="0.254" y2="2.5654" width="0.4064" layer="21"/>
 <wire x1="0.254" y1="-2.3368" x2="0.254" y2="-2.5654" width="0.4064" layer="21"/>
-<wire x1="-2.0574" y1="2.3114" x2="-2.3114" y2="2.0574" width="0.1524" layer="21"/>
+<wire x1="-1.8574" y1="2.3114" x2="-2.3114" y2="1.8574" width="0.1524" layer="21"/>
 <wire x1="-2.3114" y1="-2.3114" x2="2.3114" y2="-2.3114" width="0.1524" layer="21"/>
 <wire x1="2.3114" y1="-2.3114" x2="2.3114" y2="2.3114" width="0.1524" layer="21"/>
-<wire x1="2.3114" y1="2.3114" x2="-2.3114" y2="2.3114" width="0.1524" layer="21"/>
-<wire x1="-2.3114" y1="2.3114" x2="-2.3114" y2="-2.3114" width="0.1524" layer="21"/>
-<text x="-4.0894" y="1.1176" size="1.27" layer="21" ratio="6" rot="SR0">A</text>
-<text x="-4.0894" y="-2.3876" size="1.27" layer="21" ratio="6" rot="SR0">H</text>
-<text x="-1.1176" y="2.9464" size="1.27" layer="21" ratio="6" rot="SR90">1</text>
-<text x="2.3876" y="2.9464" size="1.27" layer="21" ratio="6" rot="SR90">8</text>
+<wire x1="2.3114" y1="2.3114" x2="-1.8574" y2="2.3114" width="0.1524" layer="21"/>
+<wire x1="-1.8574" y1="2.3114" x2="-2.3114" y2="2.3114" width="0.1524" layer="21"/>
+<wire x1="-2.3114" y1="2.3114" x2="-2.3114" y2="1.8574" width="0.1524" layer="21"/>
+<text x="-4.0894" y="1.1176" size="1.27" layer="25" ratio="6" rot="SR0">A</text>
+<text x="-4.0894" y="-2.3876" size="1.27" layer="25" ratio="6" rot="SR0">H</text>
+<text x="-1.1176" y="2.9464" size="1.27" layer="25" ratio="6" rot="SR90">1</text>
+<text x="2.3876" y="2.9464" size="1.27" layer="25" ratio="6" rot="SR90">8</text>
+<wire x1="-2.3114" y1="1.8574" x2="-2.3114" y2="-2.3114" width="0.1524" layer="21"/>
 <wire x1="-2.0574" y1="2.3114" x2="-2.3114" y2="2.0574" width="0.1524" layer="51"/>
 <wire x1="-2.3114" y1="-2.3114" x2="2.3114" y2="-2.3114" width="0.1524" layer="51"/>
 <wire x1="2.3114" y1="-2.3114" x2="2.3114" y2="2.3114" width="0.1524" layer="51"/>
@@ -1651,89 +1653,19 @@ EAGLE CAD Libraries on element14&lt;/a&gt;</description>
 <wire x1="-0.525" y1="-0.525" x2="-0.525" y2="0.525" width="0.1" layer="51"/>
 <text x="-2.65" y="1.2" size="1.27" layer="25">&gt;Name</text>
 <text x="-2.8" y="-2.6" size="1.27" layer="27">&gt;Value</text>
-<polygon width="0.05" layer="1">
-<vertex x="-0.425" y="0.275"/>
-<vertex x="-0.36" y="0.275"/>
-<vertex x="-0.225" y="0.41"/>
-<vertex x="-0.225" y="0.625"/>
-<vertex x="-0.425" y="0.625"/>
+<polygon width="0.15" layer="1">
+<vertex x="-0.395" y="0.315"/>
+<vertex x="-0.37" y="0.315"/>
+<vertex x="-0.255" y="0.43"/>
+<vertex x="-0.255" y="0.595"/>
+<vertex x="-0.395" y="0.595"/>
 </polygon>
-<polygon width="0.05" layer="1">
-<vertex x="0.425" y="0.275"/>
-<vertex x="0.36" y="0.275"/>
-<vertex x="0.225" y="0.41"/>
-<vertex x="0.225" y="0.625"/>
-<vertex x="0.425" y="0.625"/>
-</polygon>
-<polygon width="0.05" layer="1">
-<vertex x="-0.425" y="-0.275"/>
-<vertex x="-0.36" y="-0.275"/>
-<vertex x="-0.225" y="-0.41"/>
-<vertex x="-0.225" y="-0.625"/>
-<vertex x="-0.425" y="-0.625"/>
-</polygon>
-<polygon width="0.05" layer="1">
-<vertex x="0.425" y="-0.275"/>
-<vertex x="0.36" y="-0.275"/>
-<vertex x="0.225" y="-0.41"/>
-<vertex x="0.225" y="-0.625"/>
-<vertex x="0.425" y="-0.625"/>
-</polygon>
-<polygon width="0.1" layer="29">
-<vertex x="-0.425" y="0.275"/>
-<vertex x="-0.36" y="0.275"/>
-<vertex x="-0.225" y="0.41"/>
-<vertex x="-0.225" y="0.625"/>
-<vertex x="-0.425" y="0.625"/>
-</polygon>
-<polygon width="0.025" layer="31">
-<vertex x="-0.425" y="0.275"/>
-<vertex x="-0.36" y="0.275"/>
-<vertex x="-0.225" y="0.41"/>
-<vertex x="-0.225" y="0.625"/>
-<vertex x="-0.425" y="0.625"/>
-</polygon>
-<polygon width="0.025" layer="31">
-<vertex x="0.425" y="0.275"/>
-<vertex x="0.36" y="0.275"/>
-<vertex x="0.225" y="0.41"/>
-<vertex x="0.225" y="0.625"/>
-<vertex x="0.425" y="0.625"/>
-</polygon>
-<polygon width="0.1" layer="29">
-<vertex x="0.425" y="0.275"/>
-<vertex x="0.36" y="0.275"/>
-<vertex x="0.225" y="0.41"/>
-<vertex x="0.225" y="0.625"/>
-<vertex x="0.425" y="0.625"/>
-</polygon>
-<polygon width="0.025" layer="31">
-<vertex x="0.425" y="-0.275"/>
-<vertex x="0.36" y="-0.275"/>
-<vertex x="0.225" y="-0.41"/>
-<vertex x="0.225" y="-0.625"/>
-<vertex x="0.425" y="-0.625"/>
-</polygon>
-<polygon width="0.1" layer="29">
-<vertex x="0.425" y="-0.275"/>
-<vertex x="0.36" y="-0.275"/>
-<vertex x="0.225" y="-0.41"/>
-<vertex x="0.225" y="-0.625"/>
-<vertex x="0.425" y="-0.625"/>
-</polygon>
-<polygon width="0.025" layer="31">
-<vertex x="-0.425" y="-0.275"/>
-<vertex x="-0.36" y="-0.275"/>
-<vertex x="-0.225" y="-0.41"/>
-<vertex x="-0.225" y="-0.625"/>
-<vertex x="-0.425" y="-0.625"/>
-</polygon>
-<polygon width="0.1" layer="29">
-<vertex x="-0.425" y="-0.275"/>
-<vertex x="-0.36" y="-0.275"/>
-<vertex x="-0.225" y="-0.41"/>
-<vertex x="-0.225" y="-0.625"/>
-<vertex x="-0.425" y="-0.625"/>
+<polygon width="0.25" layer="29">
+<vertex x="0.395" y="0.315"/>
+<vertex x="0.37" y="0.315"/>
+<vertex x="0.255" y="0.43"/>
+<vertex x="0.255" y="0.595"/>
+<vertex x="0.395" y="0.595"/>
 </polygon>
 <wire x1="-0.79" y1="0.89" x2="0.79" y2="0.89" width="0.01" layer="39"/>
 <wire x1="0.79" y1="0.89" x2="0.79" y2="-0.89" width="0.01" layer="39"/>
@@ -1741,6 +1673,76 @@ EAGLE CAD Libraries on element14&lt;/a&gt;</description>
 <wire x1="-0.79" y1="-0.89" x2="-0.79" y2="0.89" width="0.01" layer="39"/>
 <wire x1="-0.6" y1="0.1" x2="-0.6" y2="-0.1" width="0.2" layer="21"/>
 <wire x1="0.6" y1="0.1" x2="0.6" y2="-0.1" width="0.2" layer="21"/>
+<polygon width="0.15" layer="1">
+<vertex x="0.395" y="-0.315"/>
+<vertex x="0.37" y="-0.315"/>
+<vertex x="0.255" y="-0.43"/>
+<vertex x="0.255" y="-0.595"/>
+<vertex x="0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.15" layer="31">
+<vertex x="-0.395" y="-0.315"/>
+<vertex x="-0.37" y="-0.315"/>
+<vertex x="-0.255" y="-0.43"/>
+<vertex x="-0.255" y="-0.595"/>
+<vertex x="-0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.15" layer="31">
+<vertex x="-0.395" y="0.315"/>
+<vertex x="-0.37" y="0.315"/>
+<vertex x="-0.255" y="0.43"/>
+<vertex x="-0.255" y="0.595"/>
+<vertex x="-0.395" y="0.595"/>
+</polygon>
+<polygon width="0.15" layer="31">
+<vertex x="0.395" y="0.315"/>
+<vertex x="0.37" y="0.315"/>
+<vertex x="0.255" y="0.43"/>
+<vertex x="0.255" y="0.595"/>
+<vertex x="0.395" y="0.595"/>
+</polygon>
+<polygon width="0.15" layer="31">
+<vertex x="0.395" y="-0.315"/>
+<vertex x="0.37" y="-0.315"/>
+<vertex x="0.255" y="-0.43"/>
+<vertex x="0.255" y="-0.595"/>
+<vertex x="0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.15" layer="1">
+<vertex x="-0.395" y="-0.315"/>
+<vertex x="-0.37" y="-0.315"/>
+<vertex x="-0.255" y="-0.43"/>
+<vertex x="-0.255" y="-0.595"/>
+<vertex x="-0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.25" layer="29">
+<vertex x="-0.395" y="0.315"/>
+<vertex x="-0.37" y="0.315"/>
+<vertex x="-0.255" y="0.43"/>
+<vertex x="-0.255" y="0.595"/>
+<vertex x="-0.395" y="0.595"/>
+</polygon>
+<polygon width="0.25" layer="29">
+<vertex x="-0.395" y="-0.315"/>
+<vertex x="-0.37" y="-0.315"/>
+<vertex x="-0.255" y="-0.43"/>
+<vertex x="-0.255" y="-0.595"/>
+<vertex x="-0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.25" layer="29">
+<vertex x="0.395" y="-0.315"/>
+<vertex x="0.37" y="-0.315"/>
+<vertex x="0.255" y="-0.43"/>
+<vertex x="0.255" y="-0.595"/>
+<vertex x="0.395" y="-0.595"/>
+</polygon>
+<polygon width="0.15" layer="1">
+<vertex x="0.395" y="0.315"/>
+<vertex x="0.37" y="0.315"/>
+<vertex x="0.255" y="0.43"/>
+<vertex x="0.255" y="0.595"/>
+<vertex x="0.395" y="0.595"/>
+</polygon>
 </package>
 </packages>
 <symbols>
@@ -2071,17 +2073,16 @@ EAGLE CAD Libraries on element14&lt;/a&gt;</description>
 <wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0.1524" layer="51" curve="-180"/>
 <wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0.1524" layer="51" curve="-180"/>
 <wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0" layer="51" curve="-180"/>
-<wire x1="-1.9558" y1="-4.953" x2="1.9558" y2="-4.953" width="0.1524" layer="25"/>
-<wire x1="1.9558" y1="-4.953" x2="1.9558" y2="4.953" width="0.1524" layer="25"/>
-<wire x1="1.9558" y1="4.953" x2="0.3048" y2="4.953" width="0.1524" layer="25"/>
-<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="25"/>
-<wire x1="-0.3048" y1="4.953" x2="-1.9558" y2="4.953" width="0.1524" layer="25"/>
-<wire x1="-1.9558" y1="4.953" x2="-1.9558" y2="-4.953" width="0.1524" layer="25"/>
-<wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0.1524" layer="25" curve="-180"/>
-<wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0.1524" layer="25" curve="-180"/>
-<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0" layer="25" curve="-180"/>
+<wire x1="-1.9558" y1="-4.953" x2="1.9558" y2="-4.953" width="0.1524" layer="21"/>
+<wire x1="1.9558" y1="-4.953" x2="1.9558" y2="4.953" width="0.1524" layer="21"/>
+<wire x1="1.9558" y1="4.953" x2="0.3048" y2="4.953" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="21"/>
+<wire x1="-0.3048" y1="4.953" x2="-1.9558" y2="4.953" width="0.1524" layer="21"/>
+<wire x1="-1.9558" y1="4.953" x2="-1.9558" y2="-4.953" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="21" curve="-180"/>
 <text x="-2.8702" y="5.715" size="1.27" layer="25" ratio="6" rot="SR0">&gt;NAME</text>
 <text x="-3.4544" y="-6.985" size="1.27" layer="27" ratio="6" rot="SR0">&gt;VALUE</text>
+<circle x="-4" y="4.5" radius="0.25" width="0" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -2240,12 +2241,7 @@ EAGLE CAD Libraries on element14&lt;/a&gt;</description>
 <part name="USB1" library="Xevelabs" deviceset="USB-STANDARD" device="-PLUG_A_THT"/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="DXL1" library="Xevelabs" deviceset="DYNAMIXEL_3POS" device="-R"/>
-<part name="RX" library="Xevelabs" deviceset="PIN" device="_THT_0.8"/>
 <part name="RST" library="Xevelabs" deviceset="PIN" device="_SMD_1X1" value="PIN_SMD_1X1"/>
-<part name="MISO" library="Xevelabs" deviceset="PIN" device="_SMD_2X2.5"/>
-<part name="MOSI" library="Xevelabs" deviceset="PIN" device="_SMD_2X2.5"/>
-<part name="SCK" library="Xevelabs" deviceset="PIN" device="_SMD_2X2.5"/>
-<part name="SS" library="Xevelabs" deviceset="PIN" device="_SMD_2X2.5"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND" library="Xevelabs" deviceset="PIN" device="_SMD_1X1" value="PIN_SMD_1X1"/>
 <part name="D2" library="OPL" deviceset="LED*" device="" value="Red"/>
@@ -2312,7 +2308,6 @@ EAGLE CAD Libraries on element14&lt;/a&gt;</description>
 <sheets>
 <sheet>
 <plain>
-<text x="124.46" y="264.16" size="1.778" layer="92">TODO expansion and debug pads</text>
 <text x="17.78" y="73.66" size="1.778" layer="91">DIR_RX=B1=1 : U5 open, LPC_TX disconnected, DATA fed to LPC_RX.
 DIR_RX=B1=0, U5 passing, LPC_TX holds DATA line and LPC_RX disconnected.
 If side 1 unpowered =&gt; B1=1 (that's the meaning of the E in the part number)</text>
@@ -2344,12 +2339,7 @@ If side 1 unpowered =&gt; B1=1 (that's the meaning of the E in the part number)<
 <instance part="USB1" gate="G$1" x="12.7" y="231.14"/>
 <instance part="GND9" gate="1" x="22.86" y="213.36"/>
 <instance part="DXL1" gate="G$1" x="160.02" y="60.96"/>
-<instance part="RX" gate="G$1" x="124.46" y="281.94"/>
 <instance part="RST" gate="G$1" x="35.56" y="132.08" rot="R180"/>
-<instance part="MISO" gate="G$1" x="127" y="276.86"/>
-<instance part="MOSI" gate="G$1" x="132.08" y="274.32"/>
-<instance part="SCK" gate="G$1" x="137.16" y="271.78"/>
-<instance part="SS" gate="G$1" x="142.24" y="269.24"/>
 <instance part="GND11" gate="1" x="15.24" y="99.06"/>
 <instance part="GND" gate="G$1" x="15.24" y="101.6" rot="R90"/>
 <instance part="D2" gate="LED" x="187.96" y="152.4" rot="R270"/>
@@ -2598,30 +2588,6 @@ If side 1 unpowered =&gt; B1=1 (that's the meaning of the E in the part number)<
 <wire x1="43.18" y1="210.82" x2="43.18" y2="231.14" width="0.1524" layer="91"/>
 <junction x="43.18" y="231.14"/>
 <pinref part="R5" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$17" class="0">
-<segment>
-<wire x1="124.46" y1="276.86" x2="127" y2="276.86" width="0.1524" layer="91"/>
-<pinref part="MISO" gate="G$1" pin="1"/>
-</segment>
-</net>
-<net name="N$18" class="0">
-<segment>
-<wire x1="124.46" y1="274.32" x2="132.08" y2="274.32" width="0.1524" layer="91"/>
-<pinref part="MOSI" gate="G$1" pin="1"/>
-</segment>
-</net>
-<net name="N$19" class="0">
-<segment>
-<wire x1="124.46" y1="271.78" x2="137.16" y2="271.78" width="0.1524" layer="91"/>
-<pinref part="SCK" gate="G$1" pin="1"/>
-</segment>
-</net>
-<net name="N$20" class="0">
-<segment>
-<wire x1="124.46" y1="269.24" x2="142.24" y2="269.24" width="0.1524" layer="91"/>
-<pinref part="SS" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="LED_R" class="0">
