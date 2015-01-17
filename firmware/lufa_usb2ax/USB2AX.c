@@ -106,6 +106,7 @@ bool passthrough_mode = AX_PASSTHROUGH; // determines if data from the USART is 
 #define AX_SEARCH_BOOTLOAD   6
 #define AX_GET_PARAMETERS    7
 #define AX_SEARCH_READ       8
+#define AX_SEARCH_PING       9
 
 uint8_t ax_state = AX_SEARCH_FIRST_FF; // current state of the Dynamixel packet parser state machine
 uint16_t ax_checksum = 0;
@@ -267,7 +268,10 @@ void process_incoming_USB_data(void){
                         ax_checksum =  rxbyte[PACKET_ID] + AX_CMD_SYNC_READ + rxbyte[PACKET_LENGTH];
                         receive_timer = 0;
                     } else if(rxbyte[PACKET_ID] == AX_ID_DEVICE){ 
-				        if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_RESET){
+				        if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_PING){
+					        ax_state = AX_SEARCH_PING;
+					        receive_timer = 0;
+				        } else if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_RESET){
                             ax_state = AX_SEARCH_RESET;
                             LEDs_TurnOnLEDs(LEDS_LED2);
                             receive_timer = 0;
@@ -278,7 +282,7 @@ void process_incoming_USB_data(void){
 				            ax_state = AX_GET_PARAMETERS;
                             ax_checksum = AX_ID_DEVICE + AX_CMD_READ_DATA + rxbyte[PACKET_LENGTH];
 						    receive_timer = 0;
-                        } else {
+						} else {
                             _blih();
                         }
 				    } else { 					
@@ -306,6 +310,16 @@ void process_incoming_USB_data(void){
                         _blih();
                     }
                     break;
+				
+				case AX_SEARCH_PING:
+					rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+					if (((AX_ID_DEVICE + 2 + AX_CMD_PING + rxbyte[5]) % 256) == 255){
+						axStatusPacket(AX_ERROR_NONE, NULL, 0); // TODO actually send the real status if there's been an error? But then what error could that be...?
+						ax_state = AX_SEARCH_FIRST_FF;	
+					} else {
+						_blih();
+					}
+					break;
 				
                 case AX_GET_PARAMETERS:
                     rxbyte[rxbyte_count] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);

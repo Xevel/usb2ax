@@ -42,6 +42,7 @@ Original copyright notice :
 #define AX_ID_DEVICE        0xFD
 #define AX_ID_BROADCAST     0xFE
 
+#define AX_CMD_PING         0x01
 #define AX_CMD_READ_DATA    0x02
 #define AX_CMD_RESET        0x06
 #define AX_CMD_BOOTLOAD     0x08 
