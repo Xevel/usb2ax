@@ -57,7 +57,6 @@ void axStatusPacket(uint8_t err, uint8_t* data, uint8_t nb_bytes){
 // try to read a Dynamixel packet
 // return true if successful, false otherwise 
 uint16_t axReadPacket(uint8_t length){
-    setRX();
     usart_timer = 0;
 	// wait until the expected number of byte has been read
 	while( local_rx_buffer_count < length ){ 
@@ -65,7 +64,6 @@ uint16_t axReadPacket(uint8_t length){
 		    break;
 		}
 	}
-	setTX();
 	if (local_rx_buffer_count != length){
 		return false;
 	}
@@ -91,8 +89,9 @@ int axGetRegister(uint8_t id, uint8_t addr, uint8_t nb_bytes){
    // 0xFF 0xFF ID LENGTH INSTRUCTION PARAM... CHECKSUM    
     uint16_t checksum = ~((id + 6 + addr + nb_bytes)%256);
 
-	local_rx_buffer_count = 0;
-	serial_write(0xFF);
+    local_rx_buffer_count = 0;
+    setTX();
+    serial_write(0xFF);
     serial_write(0xFF);
     serial_write(id);
     serial_write(4);    // length
@@ -100,6 +99,7 @@ int axGetRegister(uint8_t id, uint8_t addr, uint8_t nb_bytes){
     serial_write(addr);
     serial_write(nb_bytes);
     serial_write(checksum);
+    setRX();
 
     return axReadPacket(nb_bytes + 6);
 }

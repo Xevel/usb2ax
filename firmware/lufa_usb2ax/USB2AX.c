@@ -211,19 +211,12 @@ void process_incoming_USB_data(void){
 	uint8_t USB_nb_received = CDC_Device_BytesReceived (&USB2AX_CDC_Interface);
 	
 	if (USB_nb_received>0){
-        setTX();
-        
-	    for( uint8_t i = 0; i < USB_nb_received ; i++ ){
+        for( uint8_t i = 0; i < USB_nb_received ; i++ ){
             switch (ax_state){
                 case AX_SEARCH_FIRST_FF:
                     rxbyte[PACKET_FIRST_0XFF] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
-                    if (rxbyte[PACKET_FIRST_0XFF] == 0xFF){
-                        ax_state = AX_SEARCH_SECOND_FF;
-                        rxbyte_count = 1;
-                        receive_timer = 0;
-                    } else {
-                        serial_write(rxbyte[0]);
-                    }
+                    rxbyte_count = 1;
+                    _blih();
                     break;
                             
                 case AX_SEARCH_SECOND_FF:
@@ -232,8 +225,7 @@ void process_incoming_USB_data(void){
                         ax_state = AX_SEARCH_SYNC_ID;
                         receive_timer = 0;
                     } else {
-                        pass_bytes(rxbyte_count);
-                        ax_state = AX_SEARCH_FIRST_FF;
+                        _blih();
                     }
                     break;
                             
@@ -242,11 +234,11 @@ void process_incoming_USB_data(void){
                     if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
                         ax_state = AX_SEARCH_LENGTH;
                         receive_timer = 0;
-                    } else if (rxbyte[PACKET_ID] == 0xFF){
+                    } else if (rxbyte[PACKET_ID] == 0xFF){ // we've seen 3 consecutive 0xFF
 						rxbyte_count--;
-						serial_write(0xFF);
+						pass_bytes(1); // let a 0xFF pass
 					    receive_timer = 0;
-					}else {
+					} else {
                         _blih();
                     }
                     break;
@@ -348,22 +340,25 @@ void process_incoming_USB_data(void){
                     break;
             }
         }
-	    setRX();
 	}
 	
 	// Timeout on state machine while waiting on further USB data
     if(ax_state != AX_SEARCH_FIRST_FF){
         if (receive_timer > RECEIVE_TIMEOUT){
-            setTX();
-			pass_bytes(rxbyte_count);
+            pass_bytes(rxbyte_count);
             ax_state = AX_SEARCH_FIRST_FF;
-			setRX();
 		}
     }
-	
+
+    if( bit_is_set(UCSR1B, TXEN1) ){ // if some data has been sent, revert to RX
+        setRX();
+    }
 }
 
-void pass_bytes(uint8_t nb_bytes){    
+void pass_bytes(uint8_t nb_bytes){
+    if(nb_bytes){
+        setTX();
+    }
     for (uint8_t i = 0; i < nb_bytes; i++){
         serial_write(rxbyte[i]);
     }
