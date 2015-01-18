@@ -310,6 +310,9 @@
     <Compile Include="AX.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="debug.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Descriptors.c">
       <SubType>compile</SubType>
     </Compile>

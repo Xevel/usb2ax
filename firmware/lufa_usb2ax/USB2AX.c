@@ -44,6 +44,7 @@ Original copyright notice :
 #include "AX.h"
 #include "reset.h"
 #include <util/delay.h>
+#include "debug.h"
 
 /*TODO list for the firmware:
 - make the timeout lengths R/W parameters. Maybe set a minimum to avoid blocking the input...
@@ -125,8 +126,10 @@ volatile uint8_t   usart_timer = 0; // timer for RX read timeout
 
 int main(void){
     setup_hardware();
-    //hwb_setup;
-	RingBuffer_InitBuffer(&ToUSB_Buffer, ToUSB_Buffer_Data, sizeof(ToUSB_Buffer_Data));
+    
+    init_debug();
+
+    RingBuffer_InitBuffer(&ToUSB_Buffer, ToUSB_Buffer_Data, sizeof(ToUSB_Buffer_Data));
 	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
     sei();
 
@@ -136,9 +139,11 @@ int main(void){
     
     for (;;){
         while (USB_DeviceState != DEVICE_STATE_Configured); // wait for device to be configured
-
+        
+        up0;
         // get bytes from USB
         process_incoming_USB_data();
+        dw0;
         
         send_USB_data();
         
@@ -212,11 +217,23 @@ void process_incoming_USB_data(void){
 	
 	if (USB_nb_received>0){
         for( uint8_t i = 0; i < USB_nb_received ; i++ ){
+
+            up2;dw2;
+            for(uint8_t dbg_i = 0; dbg_i<ax_state; dbg_i++){
+              up2;dw2;
+            }
+            
             switch (ax_state){
                 case AX_SEARCH_FIRST_FF:
                     rxbyte[PACKET_FIRST_0XFF] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
-                    rxbyte_count = 1;
-                    _blih();
+                    if (rxbyte[PACKET_FIRST_0XFF] == 0xFF){
+                        ax_state = AX_SEARCH_SECOND_FF;
+                        rxbyte_count = 1;
+                        receive_timer = 0;
+                    } else {
+                        setTX();
+                        serial_write(rxbyte[0]);
+                    }
                     break;
                             
                 case AX_SEARCH_SECOND_FF:
@@ -307,9 +324,9 @@ void process_incoming_USB_data(void){
 					rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
 					if (((AX_ID_DEVICE + 2 + AX_CMD_PING + rxbyte[5]) % 256) == 255){
 						axStatusPacket(AX_ERROR_NONE, NULL, 0); // TODO actually send the real status if there's been an error? But then what error could that be...?
-						ax_state = AX_SEARCH_FIRST_FF;	
-					} else {
-						_blih();
+						ax_state = AX_SEARCH_FIRST_FF;
+                    } else {
+					    _blih();
 					}
 					break;
 				
@@ -341,7 +358,7 @@ void process_incoming_USB_data(void){
             }
         }
 	}
-	
+
 	// Timeout on state machine while waiting on further USB data
     if(ax_state != AX_SEARCH_FIRST_FF){
         if (receive_timer > RECEIVE_TIMEOUT){
@@ -423,6 +440,7 @@ void serial_write(uint8_t data){
  *  for later transmission to the host.
  */
 ISR(USART1_RX_vect, ISR_BLOCK){
+    up1;
     uint8_t ReceivedByte = UDR1;
 	if ( passthrough_mode == AX_PASSTHROUGH ){
 		cdc_send_byte(ReceivedByte);
@@ -432,6 +450,7 @@ ISR(USART1_RX_vect, ISR_BLOCK){
 		}
 		usart_timer = 0;
 	}
+    dw1;
 }
 
 // global timer

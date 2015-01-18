@@ -80,14 +80,14 @@ extern uint8_t local_rx_buffer[];
 extern volatile uint8_t local_rx_buffer_count;
 
 extern volatile uint8_t usart_timer; // timer for RX read timeout
-#define   USART_TIMEOUT  50   //  1ms
-#define    SEND_TIMEOUT  4    //  80us
-#define RECEIVE_TIMEOUT  100  //  2ms
+#define   USART_TIMEOUT  50   //  x20us
+#define    SEND_TIMEOUT  4    //  x20us
+#define RECEIVE_TIMEOUT  100  //  x20us
 
 //Dynamixel device Control table
 #define MODEL_NUMBER_L      0x01
 #define MODEL_NUMBER_H      0x42  // arbitrary model number that should not collide with the ones from Robotis
-#define FIRMWARE_VERSION    0x04  // Firmware version, needs to be updated with every new release
+#define FIRMWARE_VERSION    0x05  // Firmware version, needs to be updated with every new release
 
 // used for debug
 #define hwb_setup bitSet(DDRD,PORTD7) 
