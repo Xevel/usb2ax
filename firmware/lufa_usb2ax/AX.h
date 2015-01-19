@@ -44,6 +44,7 @@ Original copyright notice :
 
 #define AX_CMD_PING         0x01
 #define AX_CMD_READ_DATA    0x02
+#define AX_CMD_WRITE_DATA   0x03
 #define AX_CMD_RESET        0x06
 #define AX_CMD_BOOTLOAD     0x08 
 #define AX_CMD_SYNC_READ    0x84
@@ -58,10 +59,13 @@ Original copyright notice :
 #define AX_ERROR_NONE          0x00
 
 
+
+void axInit();
 void axStatusPacket(uint8_t err, uint8_t* data, uint8_t nb_bytes);  
 uint16_t axReadPacket(uint8_t length);
 int axGetRegister(uint8_t id, uint8_t addr, uint8_t nb_bytes);
 void sync_read(uint8_t* params, uint8_t nb_params);
 void local_read(uint8_t addr, uint8_t nb_bytes);
+void local_write(uint8_t addr, uint8_t* data, uint8_t nb_bytes);
 
 #endif /* AX_H_ */

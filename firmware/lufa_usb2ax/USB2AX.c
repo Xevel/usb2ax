@@ -127,6 +127,7 @@ volatile uint8_t   usart_timer = 0; // timer for RX read timeout
 int main(void){
     setup_hardware();
     
+    axInit();
     init_debug();
 
     RingBuffer_InitBuffer(&ToUSB_Buffer, ToUSB_Buffer_Data, sizeof(ToUSB_Buffer_Data));
@@ -140,10 +141,8 @@ int main(void){
     for (;;){
         while (USB_DeviceState != DEVICE_STATE_Configured); // wait for device to be configured
         
-        up0;
         // get bytes from USB
         process_incoming_USB_data();
-        dw0;
         
         send_USB_data();
         
@@ -291,6 +290,10 @@ void process_incoming_USB_data(void){
 				            ax_state = AX_GET_PARAMETERS;
                             ax_checksum = AX_ID_DEVICE + AX_CMD_READ_DATA + rxbyte[PACKET_LENGTH];
 						    receive_timer = 0;
+                        } else if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_WRITE_DATA) {
+                            ax_state = AX_GET_PARAMETERS;
+                            ax_checksum = AX_ID_DEVICE + AX_CMD_WRITE_DATA + rxbyte[PACKET_LENGTH];
+						    receive_timer = 0;
 						} else {
                             _blih();
                         }
@@ -345,9 +348,13 @@ void process_incoming_USB_data(void){
                                 } else {
                                     sync_read(&rxbyte[5], rxbyte[PACKET_LENGTH] - 2);
 								}									
-                            } else { // Read Data
+                            } else if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_READ_DATA) {
 						        local_read(rxbyte[5], rxbyte[6]);
-						    }
+                            } else if(rxbyte[PACKET_INSTRUCTION] == AX_CMD_WRITE_DATA){
+                                local_write(rxbyte[5], &rxbyte[6], rxbyte[PACKET_LENGTH] - 3);
+                            } else {
+                                // TODO is it possible to end up here? what to do if that's the case?
+                            }
 						    ax_state = AX_SEARCH_FIRST_FF;													
                         }
                     }
@@ -440,7 +447,7 @@ void serial_write(uint8_t data){
  *  for later transmission to the host.
  */
 ISR(USART1_RX_vect, ISR_BLOCK){
-    up1;
+    //up1;
     uint8_t ReceivedByte = UDR1;
 	if ( passthrough_mode == AX_PASSTHROUGH ){
 		cdc_send_byte(ReceivedByte);
@@ -450,7 +457,7 @@ ISR(USART1_RX_vect, ISR_BLOCK){
 		}
 		usart_timer = 0;
 	}
-    dw1;
+    //dw1;
 }
 
 // global timer

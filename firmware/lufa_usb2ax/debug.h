@@ -13,13 +13,11 @@
 
 #if(USE_DEBUG_PINS)
 
-    void init_debug(){
-        // put all the debug pins in output mode
-        bitSet(DDRB,0);
-        bitSet(DDRB,1);
-        bitSet(DDRB,2);
-        bitSet(DDRB,3);
-    }
+    #define init_debug()    \
+        bitSet(DDRB,0);     \
+        bitSet(DDRB,1);     \
+        bitSet(DDRB,2);     \
+        bitSet(DDRB,3);     \
 
     #define up0 bitSet(PORTB, 0)
     #define up1 bitSet(PORTB, 1)

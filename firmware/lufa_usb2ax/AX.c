@@ -32,14 +32,53 @@ Original copyright notice :
 *******************************************************************************/
 
 #include "AX.h" 
+#include <avr/eeprom.h>
+#include "debug.h"
 
 extern RingBuffer_t ToUSB_Buffer;
+
+// registers
+uint8_t regs[] = {MODEL_NUMBER_L, MODEL_NUMBER_H, FIRMWARE_VERSION, AX_ID_DEVICE, USART_TIMEOUT, SEND_TIMEOUT, RECEIVE_TIMEOUT, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t min_vals[] = { 10,  10,  10,   0,   0,   0,   0,   0,   0,   0,   0,   0}; // starts at START_RW_ADDR
+uint8_t max_vals[] = {254, 254, 254, 255, 255, 255, 255, 255, 255, 255, 255, 255}; // 
+
+
+//read only
+#define ADDR_MODEL_NUMBER_L         0
+#define ADDR_MODEL_NUMBER_H         1
+#define ADDR_FIRMWARE_VERSION       2
+#define ADDR_AX_ID_DEVICE           3
+
+// read/write
+#define ADDR_USART_TIMEOUT          4
+#define ADDR_SEND_TIMEOUT           5
+#define ADDR_RECEIVE_TIMEOUT        6
+//#define ADDR_...                    7
+//#define ADDR_...                    8
+//#define ADDR_...                    9
+//#define ADDR_...                    10
+//#define ADDR_...                    11
+//#define ADDR_...                    12
+//#define ADDR_...                    13
+//#define ADDR_...                    14
+//#define ADDR_...                    15
+
+#define START_RW_ADDR       ADDR_USART_TIMEOUT
+
+
+void axInit(){
+    // init R/W regs from EEPROM if some have been saved
+    // else keep default
+}
+
 
 /*
  * Send status packet
  */
 void axStatusPacket(uint8_t err, uint8_t* data, uint8_t nb_bytes){
-	uint16_t checksum = AX_ID_DEVICE + 2 + nb_bytes + err;
+	 // TODO use a return level value, except for PING...
+    
+    uint16_t checksum = AX_ID_DEVICE + 2 + nb_bytes + err;
 	
 	cdc_send_byte(0xff);
 	cdc_send_byte(0xff);
@@ -156,14 +195,36 @@ void sync_read(uint8_t* params, uint8_t nb_params){
 
 
 void local_read(uint8_t addr, uint8_t nb_bytes){
-	// currently, local read only supports registers for Model Number and Version of Firmware
-	
-	uint8_t regs[] = {MODEL_NUMBER_L, MODEL_NUMBER_H, FIRMWARE_VERSION, AX_ID_DEVICE};
-	
 	uint16_t top = (uint16_t)addr + nb_bytes;
-	if ( top > sizeof(regs) ){
+	if ( nb_bytes == 0 || top > sizeof(regs) ){
 		axStatusPacket( AX_ERROR_RANGE, NULL, 0 );
-	}
-	
-	axStatusPacket(AX_ERROR_NONE, regs + addr, nb_bytes);
+	} else {
+	    axStatusPacket(AX_ERROR_NONE, regs + addr, nb_bytes);
+    }
+}
+
+
+uint8_t can_write_data(uint8_t addr, uint8_t* data, uint8_t nb_bytes){
+    uint16_t top = (uint16_t)addr + nb_bytes;
+    if (nb_bytes == 0 || top > sizeof(regs) || addr < START_RW_ADDR ){
+        return false; 
+    }
+    // Check that the value written are acceptable
+    for (uint8_t i = 0 ; i<nb_bytes; i++ ){
+        uint8_t val = data[i];
+        if (val < min_vals[addr - START_RW_ADDR + i] || val > max_vals[addr - START_RW_ADDR + i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+void local_write(uint8_t addr, uint8_t* data, uint8_t nb_bytes){
+	if ( ! can_write_data(addr, data, nb_bytes) ){
+        axStatusPacket( AX_ERROR_RANGE, NULL, 0 );
+    } else {
+        memcpy(regs+addr, data, nb_bytes);
+        //TODO save EEPROM
+        axStatusPacket( AX_ERROR_NONE, NULL, 0 ); 
+    }
 }
