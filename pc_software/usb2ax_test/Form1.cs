@@ -54,9 +54,9 @@ namespace USB2AX_Test
         }
 
         private void Form1_Load(object sender, EventArgs e){
-            tbDevconPath.Text = Properties.Settings.Default.DevconPath;
-            tbBatchispPath.Text = Properties.Settings.Default.BatchispPath;
-            tbFirmwarePath.Text = Properties.Settings.Default.FirmwarePath;
+            tbDevconPath.Text = usb2ax_test.Properties.Settings.Default.DevconPath;
+            tbBatchispPath.Text = usb2ax_test.Properties.Settings.Default.BatchispPath;
+            tbFirmwarePath.Text = usb2ax_test.Properties.Settings.Default.FirmwarePath;
         }
 
         //******
@@ -673,10 +673,10 @@ namespace USB2AX_Test
             }
             else {
                 // Save paths, it's annoying to have to configure stuff over and over again.
-                Properties.Settings.Default.DevconPath = tbDevconPath.Text;
-                Properties.Settings.Default.BatchispPath = tbBatchispPath.Text;
-                Properties.Settings.Default.FirmwarePath = tbFirmwarePath.Text;
-                Properties.Settings.Default.Save();
+                usb2ax_test.Properties.Settings.Default.DevconPath = tbDevconPath.Text;
+                usb2ax_test.Properties.Settings.Default.BatchispPath = tbBatchispPath.Text;
+                usb2ax_test.Properties.Settings.Default.FirmwarePath = tbFirmwarePath.Text;
+                usb2ax_test.Properties.Settings.Default.Save();
 
                 // Check if everything is setup properly
                 if (TestAll()) {
