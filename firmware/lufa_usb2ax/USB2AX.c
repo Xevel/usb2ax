@@ -44,6 +44,7 @@ Original copyright notice :
 #include "AX.h"
 #include "reset.h"
 #include <util/delay.h>
+#include "eeprom.h"
 #include "debug.h"
 
 /*TODO list for the firmware:
@@ -306,6 +307,7 @@ void process_incoming_USB_data(void){
                     rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (((AX_ID_DEVICE + 2 + AX_CMD_RESET + rxbyte[5]) % 256) == 255){
                         LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
+                        eeprom_clear();
                         Jump_To_Reset(false);
                     } else {
                         _blih();

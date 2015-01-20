@@ -34,8 +34,6 @@ Original copyright notice :
 
 #ifndef AX_H_
 #define AX_H_
-
-
 #include "USB2AX.h"
 
 
@@ -53,11 +51,36 @@ Original copyright notice :
 #define AX_SYNC_READ_MAX_DEVICES    31
 
 // Error flags for status packets
-#define AX_ERROR_INSTRUCTION   0x40  
-#define AX_ERROR_CHECKSUM      0x10 
-#define AX_ERROR_RANGE         0x08 
-#define AX_ERROR_NONE          0x00
+#define AX_ERROR_INSTRUCTION    0x40  
+#define AX_ERROR_CHECKSUM       0x10 
+#define AX_ERROR_RANGE          0x08 
+#define AX_ERROR_NONE           0x00
 
+#define REG_TABLE_SIZE          18
+extern uint8_t regs[REG_TABLE_SIZE];
+
+// register table
+#define ADDR_MODEL_NUMBER_L         0 //read only
+#define ADDR_MODEL_NUMBER_H         1
+#define ADDR_FIRMWARE_VERSION       2
+#define ADDR_AX_ID_DEVICE           3
+#define ADDR_USART_TIMEOUT          4 // read/write EEPROM
+#define ADDR_SEND_TIMEOUT           5
+#define ADDR_RECEIVE_TIMEOUT        6
+//#define ADDR_...                    7
+//#define ADDR_...                    8
+//#define ADDR_...                    9
+//#define ADDR_...                    10
+//#define ADDR_...                    11
+//#define ADDR_...                    12
+//#define ADDR_...                    13
+//#define ADDR_...                    14
+//#define ADDR_...                    15
+#define ADDR_STATUS_RETURN_LEVEL    16
+
+#define ADDR_LED                      17 // read/write RAM
+
+#define START_RW_ADDR       ADDR_USART_TIMEOUT
 
 
 void axInit();
