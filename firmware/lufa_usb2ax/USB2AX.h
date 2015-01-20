@@ -80,9 +80,10 @@ extern uint8_t local_rx_buffer[];
 extern volatile uint8_t local_rx_buffer_count;
 
 extern volatile uint8_t usart_timer; // timer for RX read timeout
-#define   USART_TIMEOUT  50   //  x20us
-#define    SEND_TIMEOUT  4    //  x20us
-#define RECEIVE_TIMEOUT  100  //  x20us
+//default values, can be modified with write_data and are saved in EEPROM
+#define   USART_TIMEOUT  50   //  x 20us
+#define    SEND_TIMEOUT  4    //  x 20us
+#define RECEIVE_TIMEOUT  100  //  x 20us
 
 //Dynamixel device Control table
 #define MODEL_NUMBER_L      0x01

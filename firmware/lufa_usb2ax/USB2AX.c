@@ -48,14 +48,14 @@ Original copyright notice :
 #include "debug.h"
 
 /*TODO list for the firmware:
-- make the timeout lengths R/W parameters. Maybe set a minimum to avoid blocking the input...
 - instead of arbitrarily limiting the number of bytes and of servos in sync_read, limit bytes*servos instead...
 - there's been reports of the LED turning off when the computer goes to sleep and not turning on again when woke up...
 - try to fill the IN bank as the bytes arrives instead of at the last moment, see if there is something to be gained...
 - proper Doxygen doc instead of a bunch of random comments here and there
 - rework the timers to have something (maybe)faster and less ugly
 Done:
-* baud rate: use frequency doubling if needed (example : 57200 should become 57142, not around 58823)
+- make the timeout lengths R/W parameters. Maybe set a minimum to avoid blocking the input...
+- baud rate: use frequency doubling if needed (example : 57200 should become 57142, not around 58823)
 */
 
 /** LUFA CDC Class driver interface configuration and state information. */
@@ -153,7 +153,7 @@ int main(void){
 
 void cdc_send_byte(uint8_t data){ // TODO inline ?
 	// Careful when calling this outside of the RX ISR: we should NEVER call it when the RX ISR is enabled (risk of corruption of the buffer)
-	// So the best way to do it, if it was needed to call it while RX interrupt is enabled, would be to disable it, call this, then re-enable it immediatly... and hope no char was lost
+	// So the best way to do it, if it was needed to call it while RX interrupt is enabled, would be to disable it, call this, then re-enable it immediately... and hope no char was lost
 	// BUT anyway it should never happen : it would just corrupt the datastream to have multiple sources writing to it at the same time... so this warning is useless. 
 	RingBuffer_Insert(&ToUSB_Buffer, data);
 	send_timer = 0;
@@ -167,7 +167,7 @@ void send_USB_data(void){
 		
 		if (BufferCount) {
 			// if there are more bytes in the buffer than what can be put in the data bank OR there are a few bytes and they have been waiting for too long
-			if ( BufferCount >= CDC_TXRX_EPSIZE || send_timer > SEND_TIMEOUT ){
+			if ( BufferCount >= CDC_TXRX_EPSIZE || send_timer > regs[ADDR_SEND_TIMEOUT] ){
 				send_timer = 0;
 				
 				// load the IN data bank until full or until we loaded all the bytes we know we have
@@ -328,7 +328,7 @@ void process_incoming_USB_data(void){
 				case AX_SEARCH_PING:
 					rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
 					if (((AX_ID_DEVICE + 2 + AX_CMD_PING + rxbyte[5]) % 256) == 255){
-						axStatusPacket(AX_ERROR_NONE, NULL, 0); // TODO actually send the real status if there's been an error? But then what error could that be...?
+						axStatusPacket(AX_ERROR_NONE, NULL, 0);
 						ax_state = AX_SEARCH_FIRST_FF;
                     } else {
 					    _blih();
@@ -354,8 +354,6 @@ void process_incoming_USB_data(void){
 						        local_read(rxbyte[5], rxbyte[6]);
                             } else if(rxbyte[PACKET_INSTRUCTION] == AX_CMD_WRITE_DATA){
                                 local_write(rxbyte[5], &rxbyte[6], rxbyte[PACKET_LENGTH] - 3);
-                            } else {
-                                // TODO is it possible to end up here? what to do if that's the case?
                             }
 						    ax_state = AX_SEARCH_FIRST_FF;													
                         }
@@ -370,7 +368,7 @@ void process_incoming_USB_data(void){
 
 	// Timeout on state machine while waiting on further USB data
     if(ax_state != AX_SEARCH_FIRST_FF){
-        if (receive_timer > RECEIVE_TIMEOUT){
+        if (receive_timer > regs[ADDR_RECEIVE_TIMEOUT]){
             pass_bytes(rxbyte_count);
             ax_state = AX_SEARCH_FIRST_FF;
 		}

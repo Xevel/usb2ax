@@ -76,9 +76,9 @@ extern uint8_t regs[REG_TABLE_SIZE];
 //#define ADDR_...                    13
 //#define ADDR_...                    14
 //#define ADDR_...                    15
-#define ADDR_STATUS_RETURN_LEVEL    16
+//#define ADDR_...                    16
+//#define ADDR_LED                    17 // TODO  read/write RAM ??
 
-#define ADDR_LED                      17 // read/write RAM
 
 #define START_RW_ADDR       ADDR_USART_TIMEOUT
 

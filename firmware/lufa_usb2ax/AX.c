@@ -38,8 +38,12 @@ extern RingBuffer_t ToUSB_Buffer;
 
 // registers
 uint8_t regs[REG_TABLE_SIZE] = {MODEL_NUMBER_L, MODEL_NUMBER_H, FIRMWARE_VERSION, AX_ID_DEVICE, USART_TIMEOUT, SEND_TIMEOUT, RECEIVE_TIMEOUT, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-uint8_t min_vals[REG_TABLE_SIZE - START_RW_ADDR] = { 10,  10,  10,   0,   0,   0,   0,   0,   0,   0,   0,   0};
-uint8_t max_vals[REG_TABLE_SIZE - START_RW_ADDR] = {254, 254, 254, 255, 255, 255, 255, 255, 255, 255, 255, 255};
+
+#define   USART_TIMEOUT_MIN     8   //  x 20us
+#define    SEND_TIMEOUT_MIN     0   //  x 20us
+#define RECEIVE_TIMEOUT_MIN     10  //  x 20us
+
+uint8_t min_vals[REG_TABLE_SIZE - START_RW_ADDR] = {USART_TIMEOUT_MIN,  SEND_TIMEOUT_MIN,  RECEIVE_TIMEOUT_MIN,   0,   0,   0,   0,   0,   0,   0,   0,   0};
 
 
 void axInit(){
@@ -51,9 +55,7 @@ void axInit(){
  * Send status packet
  */
 void axStatusPacket(uint8_t err, uint8_t* data, uint8_t nb_bytes){
-	 // TODO use a return level value, except for PING...
-    
-    uint16_t checksum = AX_ID_DEVICE + 2 + nb_bytes + err;
+	uint16_t checksum = AX_ID_DEVICE + 2 + nb_bytes + err;
 	
 	cdc_send_byte(0xff);
 	cdc_send_byte(0xff);
@@ -74,7 +76,7 @@ uint16_t axReadPacket(uint8_t length){
     usart_timer = 0;
 	// wait until the expected number of byte has been read
 	while( local_rx_buffer_count < length ){ 
-		if(usart_timer > USART_TIMEOUT){
+		if(usart_timer > regs[ADDR_USART_TIMEOUT]){
 		    break;
 		}
 	}
@@ -187,7 +189,7 @@ uint8_t can_write_data(uint8_t addr, uint8_t* data, uint8_t nb_bytes){
     // Check that the value written are acceptable
     for (uint8_t i = 0 ; i<nb_bytes; i++ ){
         uint8_t val = data[i];
-        if (val < min_vals[addr - START_RW_ADDR + i] || val > max_vals[addr - START_RW_ADDR + i]){
+        if (val < min_vals[addr - START_RW_ADDR + i] ){
             return false;
         }
     }
@@ -195,7 +197,7 @@ uint8_t can_write_data(uint8_t addr, uint8_t* data, uint8_t nb_bytes){
 }
 
 void local_write(uint8_t addr, uint8_t* data, uint8_t nb_bytes){
-	if ( ! can_write_data(addr, data, nb_bytes) ){
+    if ( ! can_write_data(addr, data, nb_bytes) ){
         axStatusPacket( AX_ERROR_RANGE, NULL, 0 );
     } else {
         memcpy(regs+addr, data, nb_bytes);
