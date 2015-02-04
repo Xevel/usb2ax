@@ -191,16 +191,21 @@ void send_USB_data(void){
 	}
 }
 
-void _blih(void){ // TODO find a name for this function!
+uint8_t cdc_receive_byte(){
+    uint8_t c = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+    setTX();
+    serial_write(c);
+    return c;
+}
+
+void cleanup_input_parser(void){
     // if the last byte read is not what it's expected to be, but is a 0xFF, it could be the first 0xFF of an incoming command
     if (rxbyte[rxbyte_count-1] == 0xFF){
 		// we trade the latest 0xFF received against the first one that is necessarily in the first position of the buffer
-        pass_bytes(rxbyte_count-1); // pass the discarded data, except the last 0xFF
         ax_state = AX_SEARCH_SECOND_FF;
         rxbyte_count = 1; // keep the first 0xFF in the buffer
 		receive_timer = 0;
     } else {
-        pass_bytes(rxbyte_count);
         ax_state = AX_SEARCH_FIRST_FF;
     }
 }
@@ -218,60 +223,56 @@ void process_incoming_USB_data(void){
 	if (USB_nb_received>0){
         for( uint8_t i = 0; i < USB_nb_received ; i++ ){
 
-            up2;dw2;
-            for(uint8_t dbg_i = 0; dbg_i<ax_state; dbg_i++){
-              up2;dw2;
-            }
+            //up2;dw2;
+            //for(uint8_t dbg_i = 0; dbg_i<ax_state; dbg_i++){
+              //up2;dw2;
+            //}
             
             switch (ax_state){
                 case AX_SEARCH_FIRST_FF:
-                    rxbyte[PACKET_FIRST_0XFF] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[PACKET_FIRST_0XFF] = cdc_receive_byte();
                     if (rxbyte[PACKET_FIRST_0XFF] == 0xFF){
                         ax_state = AX_SEARCH_SECOND_FF;
                         rxbyte_count = 1;
                         receive_timer = 0;
-                    } else {
-                        setTX();
-                        serial_write(rxbyte[0]);
                     }
                     break;
                             
                 case AX_SEARCH_SECOND_FF:
-                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_SECOND_0XFF] == 0xFF){
                         ax_state = AX_SEARCH_SYNC_ID;
                         receive_timer = 0;
                     } else {
-                        _blih();
+                        cleanup_input_parser();
                     }
                     break;
                             
                 case AX_SEARCH_SYNC_ID:
-                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
                         ax_state = AX_SEARCH_LENGTH;
                         receive_timer = 0;
                     } else if (rxbyte[PACKET_ID] == 0xFF){ // we've seen 3 consecutive 0xFF
-						rxbyte_count--;
-						pass_bytes(1); // let a 0xFF pass
-					    receive_timer = 0;
-					} else {
-                        _blih();
+                        rxbyte_count--;
+                        receive_timer = 0;
+                    } else {
+                        cleanup_input_parser();
                     }
                     break;
                             
                 case AX_SEARCH_LENGTH:
-                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_LENGTH] > 1 && rxbyte[PACKET_LENGTH] < (AX_SYNC_READ_MAX_DEVICES + 4)){  // reject message if too short or too big for rxbyte buffer)
                         ax_state = AX_SEARCH_COMMAND;
                         receive_timer = 0;
                     } else {
-                        _blih();
+                        cleanup_input_parser();
                     }
                     break;
                             
                 case AX_SEARCH_COMMAND:
-                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_SYNC_READ){
                         ax_state = AX_GET_PARAMETERS;
                         ax_checksum =  rxbyte[PACKET_ID] + AX_CMD_SYNC_READ + rxbyte[PACKET_LENGTH];
@@ -296,53 +297,53 @@ void process_incoming_USB_data(void){
                             ax_checksum = AX_ID_DEVICE + AX_CMD_WRITE_DATA + rxbyte[PACKET_LENGTH];
 						    receive_timer = 0;
 						} else {
-                            _blih();
+                            cleanup_input_parser();
                         }
 				    } else { 					
-                        _blih();
+                        cleanup_input_parser();
                     }
                     break;
                             
                 case AX_SEARCH_RESET:
-                    rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[5] = cdc_receive_byte();
                     if (((AX_ID_DEVICE + 2 + AX_CMD_RESET + rxbyte[5]) % 256) == 255){
                         LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
                         eeprom_clear();
                         Jump_To_Reset(false);
                     } else {
-                        _blih();
+                        cleanup_input_parser();
                     }
                     break;
                         
                 case AX_SEARCH_BOOTLOAD:
-                    rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[5] = cdc_receive_byte();
                     if (((AX_ID_DEVICE + 2 + AX_CMD_BOOTLOAD + rxbyte[5]) % 256) == 255){
                         LEDs_TurnOffLEDs(LEDS_LED2);
                         LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
                         Jump_To_Reset(true);
                     } else {
-                        _blih();
+                        cleanup_input_parser();
                     }
                     break;
 				
 				case AX_SEARCH_PING:
-					rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+					rxbyte[5] = cdc_receive_byte();
 					if (((AX_ID_DEVICE + 2 + AX_CMD_PING + rxbyte[5]) % 256) == 255){
 						axStatusPacket(AX_ERROR_NONE, NULL, 0);
 						ax_state = AX_SEARCH_FIRST_FF;
                     } else {
-					    _blih();
+					    cleanup_input_parser();
 					}
 					break;
 				
                 case AX_GET_PARAMETERS:
-                    rxbyte[rxbyte_count] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    rxbyte[rxbyte_count] = cdc_receive_byte();
                     ax_checksum += rxbyte[rxbyte_count] ;
 					rxbyte_count++;
                     receive_timer = 0;
                     if(rxbyte_count >= (rxbyte[PACKET_LENGTH] + 4)){ // we have read all the data for the packet
                         if((ax_checksum%256) != 255){  // ignore message if checksum is bad
-                            _blih();
+                            cleanup_input_parser();
                         } else {
 						    if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_SYNC_READ){
                                 if((rxbyte[6] == 0) || (rxbyte[6] > 6)){  // maximum of 6 bytes to read, else to big for return packet
@@ -369,22 +370,12 @@ void process_incoming_USB_data(void){
 	// Timeout on state machine while waiting on further USB data
     if(ax_state != AX_SEARCH_FIRST_FF){
         if (receive_timer > regs[ADDR_RECEIVE_TIMEOUT]){
-            pass_bytes(rxbyte_count);
             ax_state = AX_SEARCH_FIRST_FF;
 		}
     }
 
     if( bit_is_set(UCSR1B, TXEN1) ){ // if some data has been sent, revert to RX
         setRX();
-    }
-}
-
-void pass_bytes(uint8_t nb_bytes){
-    if(nb_bytes){
-        setTX();
-    }
-    for (uint8_t i = 0; i < nb_bytes; i++){
-        serial_write(rxbyte[i]);
     }
 }
 
@@ -396,7 +387,7 @@ void setRX(void) {
     UCSR1B = ((1 << RXCIE1) | (1 << RXEN1));
 }
 
-void setTX(void) {
+inline void setTX(void) {
     // enable TX, disable RX and all RX interrupt
     UCSR1B = (1 << TXEN1);
 }
@@ -439,7 +430,7 @@ void serial_write(uint8_t data){
     
     // Load the next byte from the USART transmit buffer into the USART
     UDR1 = data;            // transmit data
-	bitSet(UCSR1A, TXC1);   // clear USART Transmit Complete flag
+    bitSet(UCSR1A, TXC1);   // clear USART Transmit Complete flag
 }
 
 
