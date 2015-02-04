@@ -47,8 +47,9 @@ Original copyright notice :
 #define AX_CMD_BOOTLOAD     0x08 
 #define AX_CMD_SYNC_READ    0x84
 
-#define AX_BUFFER_SIZE	            32
-#define AX_SYNC_READ_MAX_DEVICES    31
+#define AX_BUFFER_SIZE	            128
+#define AX_SYNC_READ_MAX_DEVICES    120
+#define AX_MAX_RETURN_PACKET_SIZE   235
 
 // Error flags for status packets
 #define AX_ERROR_INSTRUCTION    0x40  

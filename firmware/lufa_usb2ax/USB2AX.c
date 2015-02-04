@@ -101,7 +101,7 @@ bool passthrough_mode = AX_PASSTHROUGH; // determines if data from the USART is 
 // AX receive states
 #define AX_SEARCH_FIRST_FF   0
 #define AX_SEARCH_SECOND_FF  1
-#define AX_SEARCH_SYNC_ID    2
+#define AX_SEARCH_ID         2
 #define AX_SEARCH_LENGTH     3
 #define AX_SEARCH_COMMAND    4
 #define AX_SEARCH_RESET      5
@@ -216,6 +216,8 @@ void cleanup_input_parser(void){
 #define PACKET_ID          2
 #define PACKET_LENGTH      3
 #define PACKET_INSTRUCTION 4
+#define SYNC_READ_START_ADDR  5
+#define SYNC_READ_LENGTH  6
 
 void process_incoming_USB_data(void){
 	uint8_t USB_nb_received = CDC_Device_BytesReceived (&USB2AX_CDC_Interface);
@@ -241,14 +243,14 @@ void process_incoming_USB_data(void){
                 case AX_SEARCH_SECOND_FF:
                     rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_SECOND_0XFF] == 0xFF){
-                        ax_state = AX_SEARCH_SYNC_ID;
+                        ax_state = AX_SEARCH_ID;
                         receive_timer = 0;
                     } else {
                         cleanup_input_parser();
                     }
                     break;
                             
-                case AX_SEARCH_SYNC_ID:
+                case AX_SEARCH_ID:
                     rxbyte[rxbyte_count++] = cdc_receive_byte();
                     if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
                         ax_state = AX_SEARCH_LENGTH;
@@ -267,6 +269,7 @@ void process_incoming_USB_data(void){
                         ax_state = AX_SEARCH_COMMAND;
                         receive_timer = 0;
                     } else {
+                        axStatusPacket(AX_ERROR_RANGE, NULL, 0);
                         cleanup_input_parser();
                     }
                     break;
@@ -346,10 +349,14 @@ void process_incoming_USB_data(void){
                             cleanup_input_parser();
                         } else {
 						    if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_SYNC_READ){
-                                if((rxbyte[6] == 0) || (rxbyte[6] > 6)){  // maximum of 6 bytes to read, else to big for return packet
+                                uint8_t nb_servos_to_read = rxbyte[PACKET_LENGTH] - 4;
+                                uint8_t packet_overhead = 6;
+                                if( (rxbyte[SYNC_READ_LENGTH] == 0)
+                                    || (rxbyte[SYNC_READ_LENGTH] > AX_BUFFER_SIZE - packet_overhead) // the return packets from the servos must fit the return buffer
+                                    || ( (int16_t)rxbyte[SYNC_READ_LENGTH] * nb_servos_to_read > AX_MAX_RETURN_PACKET_SIZE - packet_overhead )){ // and the return packet to the host must not be bigger either
                                     axStatusPacket(AX_ERROR_RANGE, NULL, 0);
                                 } else {
-                                    sync_read(&rxbyte[5], rxbyte[PACKET_LENGTH] - 2);
+                                    sync_read(&rxbyte[SYNC_READ_START_ADDR], rxbyte[PACKET_LENGTH] - 2);
 								}									
                             } else if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_READ_DATA) {
 						        local_read(rxbyte[5], rxbyte[6]);
