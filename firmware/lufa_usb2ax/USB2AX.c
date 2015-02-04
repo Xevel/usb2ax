@@ -109,6 +109,7 @@ bool passthrough_mode = AX_PASSTHROUGH; // determines if data from the USART is 
 #define AX_GET_PARAMETERS    7
 #define AX_SEARCH_READ       8
 #define AX_SEARCH_PING       9
+#define AX_PASS_TO_SERVOS    10
 
 uint8_t ax_state = AX_SEARCH_FIRST_FF; // current state of the Dynamixel packet parser state machine
 uint16_t ax_checksum = 0;
@@ -191,21 +192,16 @@ void send_USB_data(void){
 	}
 }
 
-uint8_t cdc_receive_byte(){
-    uint8_t c = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
-    setTX();
-    serial_write(c);
-    return c;
-}
-
 void cleanup_input_parser(void){
     // if the last byte read is not what it's expected to be, but is a 0xFF, it could be the first 0xFF of an incoming command
     if (rxbyte[rxbyte_count-1] == 0xFF){
 		// we trade the latest 0xFF received against the first one that is necessarily in the first position of the buffer
+        pass_bytes(rxbyte_count-1); // pass the discarded data, except the last 0xFF
         ax_state = AX_SEARCH_SECOND_FF;
         rxbyte_count = 1; // keep the first 0xFF in the buffer
 		receive_timer = 0;
     } else {
+        pass_bytes(rxbyte_count);
         ax_state = AX_SEARCH_FIRST_FF;
     }
 }
@@ -232,16 +228,20 @@ void process_incoming_USB_data(void){
             
             switch (ax_state){
                 case AX_SEARCH_FIRST_FF:
-                    rxbyte[PACKET_FIRST_0XFF] = cdc_receive_byte();
+                    rxbyte[PACKET_FIRST_0XFF] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (rxbyte[PACKET_FIRST_0XFF] == 0xFF){
+                        //up2;dw2;
                         ax_state = AX_SEARCH_SECOND_FF;
                         rxbyte_count = 1;
                         receive_timer = 0;
+                    } else {
+                        setTX();
+                        serial_write(rxbyte[0]);
                     }
                     break;
                             
                 case AX_SEARCH_SECOND_FF:
-                    rxbyte[rxbyte_count++] = cdc_receive_byte();
+                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (rxbyte[PACKET_SECOND_0XFF] == 0xFF){
                         ax_state = AX_SEARCH_ID;
                         receive_timer = 0;
@@ -251,31 +251,36 @@ void process_incoming_USB_data(void){
                     break;
                             
                 case AX_SEARCH_ID:
-                    rxbyte[rxbyte_count++] = cdc_receive_byte();
-                    if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
+                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    if (rxbyte[PACKET_ID] == 0xFF){ // we've seen 3 consecutive 0xFF
+						rxbyte_count--;
+						pass_bytes(1); // let a 0xFF pass
+					    receive_timer = 0;
+					} else {
                         ax_state = AX_SEARCH_LENGTH;
                         receive_timer = 0;
-                    } else if (rxbyte[PACKET_ID] == 0xFF){ // we've seen 3 consecutive 0xFF
-                        rxbyte_count--;
-                        receive_timer = 0;
-                    } else {
-                        cleanup_input_parser();
                     }
                     break;
                             
                 case AX_SEARCH_LENGTH:
-                    rxbyte[rxbyte_count++] = cdc_receive_byte();
-                    if (rxbyte[PACKET_LENGTH] > 1 && rxbyte[PACKET_LENGTH] < (AX_SYNC_READ_MAX_DEVICES + 4)){  // reject message if too short or too big for rxbyte buffer)
-                        ax_state = AX_SEARCH_COMMAND;
-                        receive_timer = 0;
+                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
+                    if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
+                        if (rxbyte[PACKET_LENGTH] > 1 && rxbyte[PACKET_LENGTH] < (AX_SYNC_READ_MAX_DEVICES + 4)){  // reject message if too short or too big for rxbyte buffer
+                            ax_state = AX_SEARCH_COMMAND;
+                            receive_timer = 0;
+                        } else {
+                            axStatusPacket(AX_ERROR_RANGE, NULL, 0);
+                            cleanup_input_parser();
+                        }
                     } else {
-                        axStatusPacket(AX_ERROR_RANGE, NULL, 0);
-                        cleanup_input_parser();
+                        pass_bytes(rxbyte_count);
+                        ax_state = AX_PASS_TO_SERVOS;
+                        receive_timer = 0;
                     }
                     break;
                             
                 case AX_SEARCH_COMMAND:
-                    rxbyte[rxbyte_count++] = cdc_receive_byte();
+                    rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (rxbyte[PACKET_INSTRUCTION] == AX_CMD_SYNC_READ){
                         ax_state = AX_GET_PARAMETERS;
                         ax_checksum =  rxbyte[PACKET_ID] + AX_CMD_SYNC_READ + rxbyte[PACKET_LENGTH];
@@ -308,7 +313,7 @@ void process_incoming_USB_data(void){
                     break;
                             
                 case AX_SEARCH_RESET:
-                    rxbyte[5] = cdc_receive_byte();
+                    rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (((AX_ID_DEVICE + 2 + AX_CMD_RESET + rxbyte[5]) % 256) == 255){
                         LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
                         eeprom_clear();
@@ -319,7 +324,7 @@ void process_incoming_USB_data(void){
                     break;
                         
                 case AX_SEARCH_BOOTLOAD:
-                    rxbyte[5] = cdc_receive_byte();
+                    rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     if (((AX_ID_DEVICE + 2 + AX_CMD_BOOTLOAD + rxbyte[5]) % 256) == 255){
                         LEDs_TurnOffLEDs(LEDS_LED2);
                         LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
@@ -330,7 +335,7 @@ void process_incoming_USB_data(void){
                     break;
 				
 				case AX_SEARCH_PING:
-					rxbyte[5] = cdc_receive_byte();
+					rxbyte[5] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
 					if (((AX_ID_DEVICE + 2 + AX_CMD_PING + rxbyte[5]) % 256) == 255){
 						axStatusPacket(AX_ERROR_NONE, NULL, 0);
 						ax_state = AX_SEARCH_FIRST_FF;
@@ -340,7 +345,7 @@ void process_incoming_USB_data(void){
 					break;
 				
                 case AX_GET_PARAMETERS:
-                    rxbyte[rxbyte_count] = cdc_receive_byte();
+                    rxbyte[rxbyte_count] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
                     ax_checksum += rxbyte[rxbyte_count] ;
 					rxbyte_count++;
                     receive_timer = 0;
@@ -368,6 +373,16 @@ void process_incoming_USB_data(void){
                     }
                     break;
                         
+                    case AX_PASS_TO_SERVOS:
+                        setTX();
+                        serial_write(CDC_Device_ReceiveByte(&USB2AX_CDC_Interface));
+                        rxbyte_count++;
+                        receive_timer = 0;
+                        if(rxbyte_count >= (rxbyte[PACKET_LENGTH] + 4)){ // we have read all the data for the packet // we have let the right number of bytes pass
+                            ax_state = AX_SEARCH_FIRST_FF;
+                        }
+                        break;
+
                 default:
                     break;
             }
@@ -377,12 +392,22 @@ void process_incoming_USB_data(void){
 	// Timeout on state machine while waiting on further USB data
     if(ax_state != AX_SEARCH_FIRST_FF){
         if (receive_timer > regs[ADDR_RECEIVE_TIMEOUT]){
+            pass_bytes(rxbyte_count);
             ax_state = AX_SEARCH_FIRST_FF;
 		}
     }
 
     if( bit_is_set(UCSR1B, TXEN1) ){ // if some data has been sent, revert to RX
         setRX();
+    }
+}
+
+void pass_bytes(uint8_t nb_bytes){
+    if(nb_bytes){
+        setTX();
+    }
+    for (uint8_t i = 0; i < nb_bytes; i++){
+        serial_write(rxbyte[i]);
     }
 }
 
