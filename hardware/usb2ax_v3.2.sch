@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="7.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1870,7 +1870,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="Xevelabs" deviceset="R_2" device="-0402" value="22R"/>
 <part name="R2" library="Xevelabs" deviceset="R_2" device="-0402" value="150R"/>
-<part name="R3" library="Xevelabs" deviceset="R_2" device="-0402" value="150R"/>
+<part name="R3" library="Xevelabs" deviceset="R_2" device="-0402" value="47R"/>
 <part name="U2" library="Xevelabs" deviceset="IPC4282CZ6" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
@@ -2113,6 +2113,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="139.7" y1="60.96" x2="144.78" y2="60.96" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="60.96" x2="139.7" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="SJ1" gate="1" pin="2"/>
+<junction x="139.7" y="60.96"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -2125,6 +2126,7 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <wire x1="139.7" y1="43.18" x2="144.78" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="43.18" x2="139.7" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="SJ1" gate="1" pin="1"/>
+<junction x="139.7" y="43.18"/>
 </segment>
 </net>
 <net name="N$4" class="0">
@@ -2218,9 +2220,9 @@ Standard SMD solder jumper. Used to automate production. Two varients : Normally
 <net name="N$16" class="0">
 <segment>
 <pinref part="R3" gate=".1" pin="1"/>
-<wire x1="154.94" y1="43.18" x2="175.26" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="175.26" y1="43.18" x2="175.26" y2="48.26" width="0.1524" layer="91"/>
-<wire x1="175.26" y1="48.26" x2="203.2" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="43.18" x2="177.8" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="43.18" x2="177.8" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="48.26" x2="203.2" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="RX" gate="G$1" pin="1"/>
 </segment>
 </net>
