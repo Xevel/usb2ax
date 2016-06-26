@@ -303,9 +303,12 @@ namespace USB2AX_Test
             Dictionary<string,string> list = new Dictionary<string,string>();
             foreach (ManagementObject res in searcher.Get())
             {
-                if (res["Name"].ToString().Contains(pattern))
-                {
-                    list.Add(res["DeviceID"].ToString(),res["Name"].ToString());
+                if (res != null && res["Name"] != null) {
+                    string s = res["Name"].ToString();
+                    if (s != null && s.Contains(pattern))
+                    {
+                        list.Add(res["DeviceID"].ToString(), res["Name"].ToString());
+                    }
                 }
             }
             return list;
