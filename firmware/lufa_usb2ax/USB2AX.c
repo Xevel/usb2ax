@@ -58,6 +58,9 @@ Done:
 - baud rate: use frequency doubling if needed (example : 57200 should become 57142, not around 58823)
 */
 
+#define USE_RS485   (0)  // for use with a RS485 transceiver, /RE and DE connected to PB1 (SN75176 or equivalent)
+
+
 /** LUFA CDC Class driver interface configuration and state information. */
 USB_ClassInfo_CDC_Device_t USB2AX_CDC_Interface =
     {
@@ -136,7 +139,9 @@ int main(void){
 	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
     sei();
 
-    // enable pull-up on the TX pin to prevent spurious signal when in RX mode.
+    // enable pull-up on TX and RX pin to prevent spurious signal.
+    bitClear(DDRD,2);
+    bitSet( PORTD,2);
     bitClear(DDRD,3);
     bitSet( PORTD,3);
     
@@ -415,11 +420,20 @@ void pass_bytes(uint8_t nb_bytes){
 void setRX(void) {
 	loop_until_bit_is_set( UCSR1A, TXC1 ); // wait until last byte has been sent (it will set USART Transmit Complete flag)
 	
+#if USE_RS485
+    bitClear(PORTB, 1);
+#endif
+    
     // enable RX and RX interrupt, disable TX and all TX interrupt
     UCSR1B = ((1 << RXCIE1) | (1 << RXEN1));
 }
 
 inline void setTX(void) {
+    
+#if USE_RS485
+    bitSet(PORTB, 1);
+#endif
+    
     // enable TX, disable RX and all RX interrupt
     UCSR1B = (1 << TXEN1);
 }
@@ -503,6 +517,12 @@ void setup_hardware(void){
     /* Hardware Initialization */
     LEDs_Init();
     USB_Init();
+
+#if USE_RS485
+    // RS485 driver
+    bitSet(DDRB, 1);
+    bitClear(PORTB, 1);
+#endif
 
     // Start the global timer 
     TCCR0A = (1 << WGM01); // CTC mode
