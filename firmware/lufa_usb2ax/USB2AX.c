@@ -1,6 +1,8 @@
 /* ****************************************************************************
 Copyright (C) 2014 Nicolas Saugnier (nicolas.saugnier [at] esial {dot} net),
                    Richard Ibbotson (richard.ibbotson [at] btinternet {dot} com)
+					   
+			  2017 Contributions by Seed Robotics EU (seed [at] seedrobotics {dot} com )
 
 Date   : 2012/05/06
 
@@ -90,7 +92,23 @@ USB_ClassInfo_CDC_Device_t USB2AX_CDC_Interface =
 
 // Sending data to USB
 RingBuffer_t	ToUSB_Buffer;  // Circular buffer to hold data before it is sent to the host.
-static uint8_t  ToUSB_Buffer_Data[128]; // Underlying data buffer for \ref ToUSB_Buffer, where the stored bytes are located.
+static uint8_t  ToUSB_Buffer_Data[254]; // Underlying data buffer for \ref ToUSB_Buffer, where the stored bytes are located.
+										/* Seed Robotics 29-6-2017: increased size from 128 to 254;
+										 * this should accommodate larger bursts of data on devices with longer control
+										 * tables. Upon reviewing the memory usage reported by the compiler, it seems
+										 * it is already at 60% when we set it to 254, meaning we should not increase this more for now.
+										 * This works for Dynamixel 1 but for Dynamixel 2 protocol, length of packet
+										 * is 2 bytes and the control tables for XM series and MX with Dynamixel 2
+										 * have some particularities: full functionality in in the lower 255 bytes but extended Indirect
+										 * address functionality (new in XM series) is in memory positions that go all the way up to
+										 * 661; it is unlikely that one performs a read on the whole table since part of the data would be
+										 * duplicated; However Dynamixel Wizard does this (reads the full table) and for this reason, 
+										 * this buffer should be made much larger to cope with that (at least 512; ideal 1Kb) 
+										 * to ensure we don't lose bytes in case of a USB latency
+										 * issue that delays transmission to the host.
+										 * Also if we make it > 255 bytes, we will need to change the RingBuffer_t structures to ints 
+										 * instead of uint8s for indexes as they would be > 255
+										 */
 uint8_t needEmptyPacket = false; // flag used when an additional, empty packet needs to be sent to properly conclude an USB transfer
 
 // Buffer used when diverting USART data for local processing
@@ -161,6 +179,12 @@ void cdc_send_byte(uint8_t data){ // TODO inline ?
 	// Careful when calling this outside of the RX ISR: we should NEVER call it when the RX ISR is enabled (risk of corruption of the buffer)
 	// So the best way to do it, if it was needed to call it while RX interrupt is enabled, would be to disable it, call this, then re-enable it immediately... and hope no char was lost
 	// BUT anyway it should never happen : it would just corrupt the datastream to have multiple sources writing to it at the same time... so this warning is useless. 
+	
+	// Seed Robotics 29-06-2017: RingBuffer_Insert and remove have been modified to disable interrupts when
+	// manipulating the buffer structures; it should help ensure the manipulation is atomic if multiple
+	// sources are using it (such as, for example, an Interrupt firing and removing a byte from the buffer while
+	// the main code thread is doing the insert here). By disabling the interrupts temporarily we can
+	// prevent this.
 	RingBuffer_Insert(&ToUSB_Buffer, data);
 	send_timer = 0;
 }
