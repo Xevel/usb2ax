@@ -287,7 +287,13 @@ void process_incoming_USB_data(void){
                             
                 case AX_SEARCH_LENGTH:
                     rxbyte[rxbyte_count++] = CDC_Device_ReceiveByte(&USB2AX_CDC_Interface);
-                    if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
+                    if (rxbyte[PACKET_ID] == AX_ID_DEVICE && (rxbyte[PACKET_LENGTH] == 0 || rxbyte[PACKET_LENGTH] == 0xFD)) {
+                        // Fix by Tho-, 2017/07/27
+                        // We've seen 0xFF 0xFF 0xFD 0x0 or 0xFF 0xFF 0xFD 0xFD
+                        // Both are protocol 2.0 messages (header or "byte stuffing")
+                        // Let this pass - both are invalid for us anyway
+                        cleanup_input_parser();
+                    } else if (rxbyte[PACKET_ID] == AX_ID_DEVICE || rxbyte[PACKET_ID] == AX_ID_BROADCAST ){
                         if (rxbyte[PACKET_LENGTH] > 1 && rxbyte[PACKET_LENGTH] < (AX_SYNC_READ_MAX_DEVICES + 4)){  // reject message if too short or too big for rxbyte buffer
                             ax_state = AX_SEARCH_COMMAND;
                             receive_timer = 0;
@@ -296,7 +302,7 @@ void process_incoming_USB_data(void){
                             cleanup_input_parser();
                         }
                     } else {
-                        pass_bytes(rxbyte_count);
+                    pass_bytes(rxbyte_count);
                         ax_state = AX_PASS_TO_SERVOS;
                         receive_timer = 0;
                     }
