@@ -179,12 +179,6 @@ void cdc_send_byte(uint8_t data){ // TODO inline ?
 	// Careful when calling this outside of the RX ISR: we should NEVER call it when the RX ISR is enabled (risk of corruption of the buffer)
 	// So the best way to do it, if it was needed to call it while RX interrupt is enabled, would be to disable it, call this, then re-enable it immediately... and hope no char was lost
 	// BUT anyway it should never happen : it would just corrupt the datastream to have multiple sources writing to it at the same time... so this warning is useless. 
-	
-	// Seed Robotics 29-06-2017: RingBuffer_Insert and remove have been modified to disable interrupts when
-	// manipulating the buffer structures; it should help ensure the manipulation is atomic if multiple
-	// sources are using it (such as, for example, an Interrupt firing and removing a byte from the buffer while
-	// the main code thread is doing the insert here). By disabling the interrupts temporarily we can
-	// prevent this.
 	RingBuffer_Insert(&ToUSB_Buffer, data);
 	send_timer = 0;
 }

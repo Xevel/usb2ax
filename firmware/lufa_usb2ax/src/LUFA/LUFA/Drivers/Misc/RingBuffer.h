@@ -240,17 +240,13 @@
 		{
 			GCC_FORCE_POINTER_ACCESS(Buffer);
 
-			/* Seed Robotics 29-6-2017: anticipated the moment when the Interrupts are disabled
-			 * to ensure all data structures in the buffer are manipulated as atomically
-			 * as possible and prevent race conditions.
-			 */
-			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-			GlobalInterruptDisable();
-
 			*Buffer->In = Data;
 
 			if (++Buffer->In == Buffer->End)
 			  Buffer->In = Buffer->Start;
+
+			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+			GlobalInterruptDisable();
 
 			Buffer->Count++;
 
@@ -272,17 +268,13 @@
 		{
 			GCC_FORCE_POINTER_ACCESS(Buffer);
 
-			/* Seed Robotics 29-6-2017: anticipated the moment when the Interrupts are disabled
-			 * to ensure all data structures in the buffer are manipulated as atomically
-			 * as possible and prevent race conditions.
-			 */
-			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
-			GlobalInterruptDisable();
-
 			uint8_t Data = *Buffer->Out;
 
 			if (++Buffer->Out == Buffer->End)
 			  Buffer->Out = Buffer->Start;
+
+			uint_reg_t CurrentGlobalInt = GetGlobalInterruptMask();
+			GlobalInterruptDisable();
 
 			Buffer->Count--;
 
