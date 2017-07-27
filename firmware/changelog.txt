@@ -1,5 +1,10 @@
 USB2AX firmware (lufa_usb2ax)
 
+
+v05 RC1 - 2017/07/27
+  * Made buffer larger, to accept longer return packets (useful for Dynamixel 2.0 protocol) - thanks to Pedro Ramillo from Seedrobotics
+  * Fixed case where Dynamixel 2.0 packets would generate spurious Range Error packets - THanks to Tho-
+
 v04 - 2014/01/18
   * Corrects incompatibility with RoboPlus 1.1.x and Dynamixel v2.0 protocol.
   * added a "reset to bootloader" function triggered by opening the port at 1200bps and closing it. The old way (with a "bootload" dynamixel packet) is still available.
