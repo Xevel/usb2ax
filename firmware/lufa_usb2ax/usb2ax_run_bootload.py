@@ -16,7 +16,7 @@
 #COM_PORT = "/dev/ttyACM0"
 #COM_PORT = "/dev/serial/by-id/usb-Xevelabs_USB2AX_64033353031351600170-if00"
 
-COM_PORT = "COM7"
+COM_PORT = "/dev/ttyACM0"
 
 #************************************************************************************
 # TODO :
