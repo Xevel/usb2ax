@@ -30,7 +30,7 @@ namespace usb2ax_updater {
 
             List<string> list = new List<string>();
             foreach (ManagementObject res in searcher.Get()) {
-                if (res["Name"].ToString().Contains(pattern)) {
+                if (res != null && res["Name"] != null && res["Name"].ToString().Contains(pattern)) {
                     list.Add(res["Name"].ToString());
                 }
             }
@@ -235,7 +235,7 @@ namespace usb2ax_updater {
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
             MessageBox.Show(
-                "USB2AX Updater v1.0\nCopyright © 2014 Nicolas \"Xevel\" Saugnier\n\nwww.xevelabs.com\n\n"
+                "USB2AX Updater v1.1\nCopyright © 2017 Nicolas \"Xevel\" Saugnier\n\nwww.xevelabs.com\n\n"
                 + "Permission is hereby granted, free of charge, to any person obtaining a copy "
                 + "of this software and associated documentation files (the \"Software\"), to deal "
                 + "in the Software without restriction, including without limitation the rights "
@@ -255,6 +255,11 @@ namespace usb2ax_updater {
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Asterisk);
 
+
+        }
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
 
         }
     }
